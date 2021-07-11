@@ -13,44 +13,60 @@ export class HomePage {
   constructor(private appAvailability: AppAvailability, private platform: Platform, private iab: InAppBrowser) {
 
   }
-
-  openApp() {
-    let app: string;
-    if (this.platform.is('android')) {
-      app = 'com.facebook.katana';
-
-    this.appAvailability.check(app)
-      .then(
-        (yes: boolean) => {
-          let sApp = (window as any).startApp.set({
-            "package": app
-          });
-          sApp.start();
-        },
-        (no: boolean) => {
-          let target = "_system";
-          this.iab.create('https://play.google.com/store/apps/details?id=com.facebook.katana', target);
-        }
-      );
-    }
-
-      if (this.platform.is('ios')) {
-        app = 'app.facebook.katana';  
-      this.appAvailability.check(app)
-        .then(
-          (yes: boolean) => {
-            let sApp = (window as any).startApp.set({
-              "package": app
-            });
-            sApp.start();
-          },
-          (no: boolean) => {
-            let target = "_system";
-            this.iab.create('https://apps.apple.com/in/app/facebook/id284882215', target);
-          }
-        );
+  openAppUrl(app: string, name: string, id?: string) {
+    switch (app) {
+        case 'facebook':
+            this.launchApp(
+              'fb://', 'com.facebook.katana',
+              'fb://profile/' + id,
+              'fb://page/' + id,
+              'https://www.facebook.com/' + name);
+            break;
+        case 'instagram':
+            this.launchApp(
+              'instagram://',
+              'com.instagram.android',
+              'instagram://user?username=' + name,
+              'instagram://user?username=' + name,
+              'https://www.instagram.com/' + name);
+            break;
+        case 'twitter':
+            this.launchApp(
+              'twitter://', 'com.twitter.android',
+              'twitter://user?screen_name=' + name,
+              'twitter://user?screen_name=' + name,
+              'https://twitter.com/' + name);
+            break;
+        default:
+            break;
       }
   }
+
+private launchApp(iosApp: string, androidApp: string, appUrlIOS: string, appUrlAndroid: string, webUrl: string) {
+    let app: string;
+    let appUrl: string;
+    // check if the platform is ios or android, else open the web url
+    if (this.platform.is('ios')) {
+      app = iosApp;
+      appUrl = appUrlIOS;
+    } else if (this.platform.is('android')) {
+      app = androidApp;
+      appUrl = appUrlAndroid;
+    } else {
+      this.iab.create(webUrl, '_system');
+      return;
+    }
+    this.appAvailability.check(app).then(
+        () => {
+            // success callback, the app exists and we can open it
+            this.iab.create(appUrl, '_system');
+        },
+        () => {
+            // error callback, the app does not exist, open regular web url instead
+            this.iab.create(webUrl, '_system');
+        }
+    );
+}
     
   
 }
