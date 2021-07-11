@@ -20,7 +20,7 @@ export class HomePage {
               'fb://', 'com.facebook.katana',
               'fb://profile/' + id,
               'fb://page/' + id,
-              'https://www.facebook.com/' + name);
+              'https://play.google.com/store/apps/details?id=com.facebook.katana');
             break;
         case 'instagram':
             this.launchApp(
@@ -28,14 +28,14 @@ export class HomePage {
               'com.instagram.android',
               'instagram://user?username=' + name,
               'instagram://user?username=' + name,
-              'https://www.instagram.com/' + name);
+              'https://play.google.com/store/apps/details?id=com.instagram.android');
             break;
         case 'twitter':
             this.launchApp(
               'twitter://', 'com.twitter.android',
               'twitter://user?screen_name=' + name,
               'twitter://user?screen_name=' + name,
-              'https://twitter.com/' + name);
+              'https://play.google.com/store/apps/details?id=com.twitter.android');
             break;
         default:
             break;
