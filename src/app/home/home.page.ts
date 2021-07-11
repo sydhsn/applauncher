@@ -35,9 +35,7 @@ export class HomePage {
     }
 
       if (this.platform.is('ios')) {
-        app = 'app.facebook.katana';
-      
-  
+        app = 'app.facebook.katana';  
       this.appAvailability.check(app)
         .then(
           (yes: boolean) => {
